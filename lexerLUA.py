@@ -1,14 +1,12 @@
-# lexer.py
-
-
-# buscar difrernecia entre sly y ply 
+# Analizador Lexico para LUA 5.1
+# Eliana Osorio R.
 
 import sly
 
 class Lexer(sly.Lexer):
-	# Se debe definir tokens
 
-	
+
+
 	tokens = {
 
 		# Palabras Reservadas
@@ -25,7 +23,7 @@ class Lexer(sly.Lexer):
 		IF,
 		IN, 
 		LOCAL, 
-		NIL, 
+		NIL,  # Nil es el tipo del valor nil, cuya principal propiedad es ser diferente de cualquier otro valor
 		NOT, 
 		OR,
 		REPEAT, 
@@ -36,7 +34,7 @@ class Lexer(sly.Lexer):
 		WHILE,
 		
 
-		# Operadores de relacion ((( que es eso ?)))
+		# Operadores de relacion 
 		EQ, 
 		NE, 
 		LE, 
@@ -54,7 +52,7 @@ class Lexer(sly.Lexer):
 	}
 
 
-	# consutlar diferencia o conistencia de los literals en SLY ------------------------------ strings 
+	#A literal character is a single character that is returned “as is” when encountered by the lexer.
 
 	literals = "+-*/%^#=(){}[];:,."
 
@@ -63,7 +61,7 @@ class Lexer(sly.Lexer):
 	ignore = " \t"
 
 
-	
+	# Define a rule so we can track line numbers
 	@_(r'\n+')
 	def ignore_newline(self, t):
 		self.lineno += len(t.value)
@@ -72,7 +70,7 @@ class Lexer(sly.Lexer):
 
 	STRING = r'".*"'
 	
-	# Operadores   ( WTF ?! )
+	# Operadores  
 	EQ = r"=="
 	NE = r"~="
 	LE = r"<="
@@ -80,7 +78,7 @@ class Lexer(sly.Lexer):
 	LT = r"<"
 	GT = r">"
 
-	# Identificadores ((( esto es igual que el define en PLY ?)))
+	# Identificadores ( reconocer tokens en minuscula y mayuscula)
 
 	ID = r"[a-zA-Z_][a-zA-Z0-9_]*"
 	ID["and"] = AND
@@ -95,7 +93,7 @@ class Lexer(sly.Lexer):
 	ID["if"] = IF
 	ID["in"] = IN
 	ID["local"] = LOCAL
-	ID["nil"] = NIL      # revisar para que sirve
+	ID["nil"] = NIL     
 	ID["not"] = NOT
 	ID["or"] = OR
 	ID["repeat"] = REPEAT
@@ -108,13 +106,11 @@ class Lexer(sly.Lexer):
 
 
 
+	# Lua acepta constantes enteras hexadecimales, escritas anteponiendo el prefijo 0x.
 
-
-	#Reconocimiento de enteros y hexadecimales ( para el hexadecimal se antepone 0x para identificarlo)
-
-	@_(r'\d+', r'0x[0-9a-fA-F]+') #esto reconoce los hexadecimales
+	@_(r'\d+', r'0x[0-9a-fA-F]+')
 	def NUMBER(self, t):
-		if t.value.startswith('0x'):  # deben iniciar com 0x
+		if t.value.startswith('0x'):
 			t.value = int(t.value[2:], 16)
 		else:
 			t.value = int(t.value)
@@ -129,10 +125,10 @@ class Lexer(sly.Lexer):
 		
 
 
-		# aja ... es la prueba ?? 
+	
 		
 if __name__ == '__main__':
-    lua = '''do
+    PruebaLua = '''do
        local var, limit, step = tonumber(e1), tonumber(e2), tonumber(e3)
        if not (var and limit and step) then error() end
        while (step > 0 and var <= limit) or (step <= 0 and var >= limit) do
@@ -142,6 +138,7 @@ if __name__ == '__main__':
        end
      end
 	'''
+	
     lexer = Lexer()
-    for tok in lexer.tokenize(lua):
+    for tok in lexer.tokenize(PruebaLua):
         print(tok)
