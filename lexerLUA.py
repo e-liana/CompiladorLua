@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 # Analizador Lexico para LUA 5.1
 # Eliana Osorio R.
 
@@ -125,7 +128,7 @@ class Lexer(sly.Lexer):
 		
 
 
-	
+	# Prueba	
 		
 if __name__ == '__main__':
     PruebaLua = '''do
